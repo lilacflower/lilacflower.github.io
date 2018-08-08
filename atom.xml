@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Lilac的个人主页</title>
   
-  
+  <subtitle>生活离不开coding，也离不开诗和远方...</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiyuxy.com/"/>
