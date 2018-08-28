@@ -3,6 +3,31 @@
   
     
     <entry>
+      <title>单例模式的四类写法</title>
+      <link href="/2018/08/28/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9B%9B%E7%B1%BB%E5%86%99%E6%B3%95/"/>
+      <url>/2018/08/28/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9B%9B%E7%B1%BB%E5%86%99%E6%B3%95/</url>
+      <content type="html"><![CDATA[<ul><li><p>饱汉模式（也称懒汉）</p><ol><li><p>饱汉-基础（非线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static Singleton instance = null;</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance() &#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            instance = new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>饱汉模式的核心是懒加载。优点是启动速度快、节省资源，一直到实例被第一次访问才初始化单例；缺点是线程不安全，if语句存在竞态条件。在单线程环境下可采用此种写法。</p></li><li><p>饱汉-变种1（线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static Singleton instance = null;</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public synchronized static Singleton getInstance() &#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            instance = new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这种写法虽然绝对线程安全，但是并发性能极差，单例只需要初始化一次，但初始化后，synchronized的锁无法避免，从而getInstance()方法完全变成了串行操作。在性能不敏感的场景下可采用这种写法。</p></li><li><p>饱汉-变种2（非线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static Singleton instance = null;</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance() &#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">        synchronized (Singleton.class) &#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这种写法的核心是双重检查锁（Double Check Lock，简称DCL），代码看起来似乎是线程安全，实则不然，由于指令重排序，可能得到“半个对象”，关于指令重排序，读者可自行学习。</p></li><li><p>饱汉-变种3（线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static volatile Singleton instance = null;</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance() &#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">        synchronized (Singleton.class) &#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这种写法专门针对变种2，在instance上增加了volatile关键字，使用于性能敏感的场景。</p></li></ol></li><li><p>饿汉模式（线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static final Singleton instance = new Singleton();</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance() &#123;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>饿汉模式的好处是天生的线程安全（类加载时初始化单例），使用时没有延迟；坏处是可能造成资源浪费（也即是在类加载后一直不使用单例）。</p></li><li><p>Holder模式（线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">    private static class SingletonHolder &#123;</span><br><span class="line">        private static final Singleton instance = new Singleton();</span><br><span class="line">        private SingletonHolder() &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    private Singleton() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance() &#123;</span><br><span class="line">        return SingletonHolder.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>Holder模式满足了两点要求：核心仍是静态变量，满足线程安全；通过静态内部类持有真正实例，间接实现了懒加载，略优于饱汉模式的变种3。</p></li><li><p>枚举模式（线程安全）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public enum Singleton &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这种写法虽然牺牲了静态工厂方法的优点（无法实现懒加载），但它可以避免多线程同步问题，还能防止反序列化重新创建新的对象。</p></li></ul><p>以上分析忽略了反射和序列化可以创建新的实例从而破坏单例模式的问题，只有枚举模式能防范这一问题。下面对以上分析做个总结：</p><table><thead><tr><th style="text-align:center">实现方式</th><th style="text-align:center">核心点</th><th style="text-align:center">资源浪费</th><th style="text-align:center">线程安全</th><th style="text-align:center">多线程环境下的性能优化</th></tr></thead><tbody><tr><td style="text-align:center">饱汉-基础</td><td style="text-align:center">懒加载</td><td style="text-align:center">否</td><td style="text-align:center">否</td><td style="text-align:center">-</td></tr><tr><td style="text-align:center">饱汉-变种1</td><td style="text-align:center">懒加载、同步</td><td style="text-align:center">否</td><td style="text-align:center">是</td><td style="text-align:center">否</td></tr><tr><td style="text-align:center">饱汉-变种2</td><td style="text-align:center">懒加载、DCL</td><td style="text-align:center">否</td><td style="text-align:center">否</td><td style="text-align:center">-</td></tr><tr><td style="text-align:center">饱汉-变种3</td><td style="text-align:center">懒加载、DCL、volatile</td><td style="text-align:center">否</td><td style="text-align:center">是</td><td style="text-align:center">是</td></tr><tr><td style="text-align:center">饿汉模式</td><td style="text-align:center">静态变量初始化</td><td style="text-align:center">是</td><td style="text-align:center">是</td><td style="text-align:center">是</td></tr><tr><td style="text-align:center">Holder模式</td><td style="text-align:center">静态变量初始化、Holder</td><td style="text-align:center">否</td><td style="text-align:center">是</td><td style="text-align:center">是</td></tr><tr><td style="text-align:center">枚举模式</td><td style="text-align:center">枚举本质、静态变量初始化</td><td style="text-align:center">否</td><td style="text-align:center">是</td><td style="text-align:center">是</td></tr></tbody></table>]]></content>
+      
+      <categories>
+          
+          <category> 程序设计 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 单例 </tag>
+            
+            <tag> 设计模式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>Java代码优化（下）</title>
       <link href="/2018/08/27/Java%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
       <url>/2018/08/27/Java%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%8B%EF%BC%89/</url>
@@ -18,6 +43,8 @@
         <tags>
             
             <tag> java </tag>
+            
+            <tag> 代码优化 </tag>
             
         </tags>
       
@@ -40,6 +67,8 @@
             
             <tag> java </tag>
             
+            <tag> 代码优化 </tag>
+            
         </tags>
       
     </entry>
@@ -60,6 +89,8 @@
         <tags>
             
             <tag> java </tag>
+            
+            <tag> 位运算 </tag>
             
         </tags>
       
@@ -126,6 +157,8 @@
             
             <tag> spring </tag>
             
+            <tag> 面向切面 </tag>
+            
         </tags>
       
     </entry>
@@ -148,6 +181,10 @@
             <tag> java </tag>
             
             <tag> spring </tag>
+            
+            <tag> 依赖注入 </tag>
+            
+            <tag> 面向切面 </tag>
             
         </tags>
       
