@@ -10,14 +10,16 @@
       
       <categories>
           
-          <category> java </category>
+          <category> 程序设计 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> JVM </tag>
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
             
         </tags>
       
@@ -228,9 +230,9 @@
             
             <tag> spring </tag>
             
-            <tag> 依赖注入 </tag>
-            
             <tag> 面向切面 </tag>
+            
+            <tag> 依赖注入 </tag>
             
         </tags>
       

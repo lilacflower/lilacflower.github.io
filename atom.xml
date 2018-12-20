@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiyuxy.com/"/>
-  <updated>2018-12-20T03:32:57.602Z</updated>
+  <updated>2018-12-20T03:36:49.406Z</updated>
   <id>http://xiyuxy.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://xiyuxy.com/2018/12/20/JVM%E6%B5%85%E6%9E%90/"/>
     <id>http://xiyuxy.com/2018/12/20/JVM浅析/</id>
     <published>2018-12-20T01:59:50.000Z</published>
-    <updated>2018-12-20T03:32:57.602Z</updated>
+    <updated>2018-12-20T03:36:49.406Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>本节内容主要从JVM结构、类加载机制、垃圾回收GC原理、JVM内存分配及回收策略、JVM内存泄露和溢出等五个方面展开。</p><h1 id="二、JVM结构"><a href="#二、JVM结构" class="headerlink" title="二、JVM结构"></a>二、JVM结构</h1><p>JVM的内部结构如下图：</p><p><img src="https://img-blog.csdn.net/20170823151822792?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hlbmdtaW5ncWlqaXF1YW4=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="JVM内部结构"></p><ul><li><p>类装载器</p><p>JVM启动，程序开始执行时，负责将class字节码加载到JVM内存区域中</p></li><li><p>执行引擎</p><p>负责执行class文件中包含的字节码指令</p></li><li><p>本地方法库</p><p>主要是调用C或C++实现的本地方法以及返回结果</p></li><li><p>运行时数据区（重点关注）</p><ul><li><p>方法区（Method Area）</p><p>用于存储类结构信息，包括常量池、静态变量、构造函数等</p></li><li><p>堆（Heap）</p><p>存储java实例或者对象的地方，这块是GC的主要区域，方法区和堆是被所有java线程共享的</p></li><li><p>虚拟机栈（VM Stack）</p><p>虚拟机栈总是和线程相关联的，每当创建一个线程时，JVM就会为这个线程创建一个对应的虚拟机栈。在这个虚拟机栈中会包含多个栈帧，每运行一个方法就创建一个栈帧，用于存储局部变量表、操作栈、方法返回值等，每一个方法从调用直至执行完成的过程，就对应一个栈帧在虚拟机栈中入栈到出栈的过程，所以虚拟机栈是线程私有的</p></li><li><p>程序计数器（Program Counter Register）</p><p>程序计数器是一块较小的内存空间，可以看作是当前线程所执行的字节码的行号指示器。分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成</p></li><li><p>本地方法栈（Native Method Stack）</p><p>和虚拟机栈的作用差不多，只不过是为JVM所使用的nvtive方法服务的</p></li></ul></li></ul><h1 id="三、JVM类加载机制"><a href="#三、JVM类加载机制" class="headerlink" title="三、JVM类加载机制"></a>三、JVM类加载机制</h1><p>JVM类加载机制主要采用的是双亲委派模型如下图所示：</p><p><img src="https://img-blog.csdn.net/20170823153705547?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2hlbmdtaW5ncWlqaXF1YW4=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="类加载器"></p><ul><li><p>启动类加载器（Bootstrap ClassLoader）</p><p>它是最顶层的类加载器，是由C++编写而成，已经内嵌到JVM中了，在JVM启动时会初始化该ClassLoader，它主要用来读取Java的核心类库jre/lib/rt.jar中所有的class文件，如果需要将自己写的类加载器加载请求委派给引导类加载器，那么直接使用null代替即可</p></li><li><p>扩展类加载器（Extension ClassLoader）</p><p>负责加载jre/lib/ext目录中的jar包 </p></li><li><p>应用程序类加载器（Application ClassLoader）</p><p>是类加载器ClassLoader.getSystemClassLoader()方法的返回值，因此称为系统类加载器，负责加载用户路径上指定的类库，一般情况下是默认的类加载器 </p></li><li><p>自定义类加载器（Custom ClassLoader）</p><p>负责加载用户自定义的jar包</p></li></ul><p>以上4种类加载器之间的这种层次关系称为类加载器的双亲委派模型，双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应当有自己的父类加载器。这里的类加载器之间的父子关系一般不会以继承的关系来实现，而是都是用组合关系来复用父加载器的代码 。</p><p>双亲委派的工作流程：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成，每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到顶层的启动类加载器中，只有父类加载器反馈自己无法完成这个加载请求时，子加载器才会尝试自己去加载。</p><p>双亲委派机制的最大优点就是使得java类随着它的类加载器一起具备了一种带有优先级的层次关系。尤其是保证了基础类的统一性，保证了java程序的稳定运行</p><h1 id="四、垃圾回收GC原理"><a href="#四、垃圾回收GC原理" class="headerlink" title="四、垃圾回收GC原理"></a>四、垃圾回收GC原理</h1><p>垃圾回收算法主要采用的是分代收集算法【GC】。 </p><p>GC是根据对象的存活周期的不同将内存划分为几块。一般是把java堆分成新生代和老年代。新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，于是选用复制算法，只需要复制少量存活对象即可完成收集。而老年代中因为对象存活率高、没有额外的空间对它进行分配担保，就必须使用“标记-清理”或者“标记-整理”算法来回收</p><h1 id="五、JVM内存分配及回收策略"><a href="#五、JVM内存分配及回收策略" class="headerlink" title="五、JVM内存分配及回收策略"></a>五、JVM内存分配及回收策略</h1><p>JVM的内存分配也是和GC保持一致的，具体分配如图：</p><p><img src="https://img-blog.csdn.net/20140101101922203?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2luZ29md29ybGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="内存分配"></p><p>具体的回收策略如图：</p><p><img src="https://img-blog.csdn.net/20140101113433906?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2luZ29md29ybGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="回收策略"></p><p>策略总结：对象优先在eden区分配，大对象直接进入老年代，长期存活的对象将进入老年代，动态对象进行年龄判定后再分代</p><h1 id="六、JVM内存泄漏和溢出"><a href="#六、JVM内存泄漏和溢出" class="headerlink" title="六、JVM内存泄漏和溢出"></a>六、JVM内存泄漏和溢出</h1><h2 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h2><ul><li><p>内存泄漏</p><p>指程序中动态分配内存给一些临时对象，但是对象不会被GC所回收，它始终占用内存。即被分配的对象可达但已无用</p></li><li><p>内存溢出</p><p>指程序运行过程中无法申请到足够的内存而导致的一种错误，内存溢出通常发生于Old段或Perm段垃圾回收后，仍然无内存空间容纳新的Java对象的情况</p><p>从定义上可以看出内存泄露是内存溢出的一种诱因，不是唯一因素</p><p>Java堆内存的OutOfMemoryError异常是实际应用中最常见的内存溢出异常情况，出现Java堆内存溢出时，异常堆栈信息“java.lang.OutOfMemoryError”会跟着进一步提示“Java heapspace”</p></li></ul><h2 id="2-内存泄漏常见的几种场景"><a href="#2-内存泄漏常见的几种场景" class="headerlink" title="2. 内存泄漏常见的几种场景"></a>2. 内存泄漏常见的几种场景</h2><ol><li><p>长生命周期的对象持有短生命周期对象的引用</p><p>这是内存泄露最常见的场景，也是代码设计中经常出现的问题。例如：在全局静态map中缓存局部变量，且没有清空操作，随着时间的推移，这个map会越来越大，造成内存泄露 </p></li><li><p>修改hashset中对象的参数值，且参数是计算哈希值的字段</p><p>当一个对象被存储进HashSet集合中以后，就不能修改这个对象中的那些参与计算哈希值的字段，否则对象修改后的哈希值与最初存储进HashSet集合中时的哈希值就不同了，在这种情况下，即使在contains方法使用该对象的当前引用作为参数去HashSet集合中检索对象，也将返回找不到对象的结果，这也会导致无法从HashSet集合中删除当前对象，造成内存泄露</p></li><li><p>机器的连接数和关闭时间设置</p><p>长时间开启非常耗费资源的连接，也会造成内存泄露</p></li></ol><h2 id="3-内存溢出的几种情况"><a href="#3-内存溢出的几种情况" class="headerlink" title="3. 内存溢出的几种情况"></a>3. 内存溢出的几种情况</h2><ol><li><p>堆内存溢出（OutOfMemoryError：Java heap space）</p><p>在jvm规范中，堆中的内存是用来生成对象实例和数组的。如果细分，堆内存还可以分为年轻代和年老代，年轻代包括一个eden区和两个survivor区。</p><p>当生成新对象时，内存的申请过程如下：<br>a、jvm先尝试在eden区分配新建对象所需的内存；<br>b、如果内存大小足够，申请结束，否则进行下一步；<br>c、jvm启动youngGC，试图将eden区中不活跃的对象释放掉，释放后若eden空间仍然不足以放入新对象，则试图将部分eden中活跃对象放入survivor区；<br>d、survivor区被用来作为eden及old的中间交换区域，当old区空间足够时，survivor区的对象会被移到old区，否则会被保留在survivor区；<br>e、当old区空间不够时，jvm会在old区进行full GC；<br>f、full GC后，若survivor及old区仍然无法存放从eden复制过来的部分对象，导致jvm无法在eden区为新对象创建内存区域，则出现”out of memory错误”： outOfMemoryError：java heap space</p></li><li><p>方法区内存溢出（OutOfMemoryError：permgem space）</p><p>在jvm规范中，方法区主要存放的是类信息、常量、静态变量等。</p><p>所以如果程序加载的类过多，或者使用反射、cglib等这种动态代理生成类的技术，就可能导致该区发生内存溢出，一般该区发生内存溢出时的错误信息为： outOfMemoryError：permgem space</p></li><li><p>线程栈溢出（java.lang.StackOverflowError）</p><p>线程栈时线程独有的一块内存结构，所以线程栈发生问题必定是某个线程运行时产生的错误。<br>一般线程栈溢出是由于递归太深或方法调用层级过多导致的。发生栈溢出的错误信息为：java.lang.StackOverflowError</p></li><li><p>如何解决内存泄漏或溢出问题</p><p>要解决这个区域的异常，一般的手段是首先通过内存映像分析工具（如Eclipse Memory Analyzer）对dump 出来的堆转储快照进行分析，重点是确认内存中的对象是否是必要的，也就是要先分清楚到底是出现了内存泄漏（Memory Leak）还是内存溢出（Memory Overflow）</p><p>如果是内存泄漏，可进一步通过工具查看泄漏对象到GC Roots 的引用链，于是就能找到泄漏对象是通过怎样的路径与GC Roots 相关联并导致垃圾收集器无法自动回收它们的，掌握了泄漏对象的类型信息，以及GC Roots 引用链的信息，就可以比较准确地定位出泄漏代码的位置</p><p>如果不存在泄漏，换句话说就是内存中的对象确实都还必须存活着，那就应当检查虚拟机的堆参数（-Xmx与-Xms），与机器物理内存对比看是否还可以调大，从代码上检查是否存在某些对象生命周期过长、持有状态时间过长的情况，尝试减少程序运行期的内存消耗</p></li><li><p>如何避免发生内存泄漏或溢出</p><ul><li>尽早释放无用对象的引用</li><li>使用字符串处理，避免使用String，应使用StringBuffer，每一个String对象都得独立占用内存一块区域</li><li>尽量少用静态变量，因为静态变量存放在永久代（方法区），永久代基本不参与垃圾回收</li><li>避免在循环中创建对象</li><li>开启大型文件或从数据库一次拿了太多的数据很容易造成内存溢出，所以在这些地方要大概计算一下数据量的最大值是多少，并且设定所需最小及最大的内存空间值</li></ul></li></ol>]]></content>
     
@@ -34,10 +34,12 @@
     
     </summary>
     
-      <category term="java" scheme="http://xiyuxy.com/categories/java/"/>
+      <category term="程序设计" scheme="http://xiyuxy.com/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"/>
     
     
-      <category term="JVM" scheme="http://xiyuxy.com/tags/JVM/"/>
+      <category term="java" scheme="http://xiyuxy.com/tags/java/"/>
+    
+      <category term="jvm" scheme="http://xiyuxy.com/tags/jvm/"/>
     
   </entry>
   
@@ -303,9 +305,9 @@
     
       <category term="spring" scheme="http://xiyuxy.com/tags/spring/"/>
     
-      <category term="依赖注入" scheme="http://xiyuxy.com/tags/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"/>
-    
       <category term="面向切面" scheme="http://xiyuxy.com/tags/%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2/"/>
+    
+      <category term="依赖注入" scheme="http://xiyuxy.com/tags/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"/>
     
   </entry>
   
