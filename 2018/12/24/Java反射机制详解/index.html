@@ -90,7 +90,7 @@
 	
 		<i class="iconfont icon-words"></i>
 		<span>
-			3842
+			3825
 		</span>
 	
 </div>
@@ -130,7 +130,7 @@
 <h3 id="3-2-利用反射，可以减少编写Servlet的个数"><a href="#3-2-利用反射，可以减少编写Servlet的个数" class="headerlink" title="3.2 利用反射，可以减少编写Servlet的个数"></a>3.2 利用反射，可以减少编写Servlet的个数</h3><ol>
 <li>编写一个BaseServlet继承HttpServlet，这是一个通用的BaseServlet</li>
 <li>编写具体实现的方法servlet类</li>
-<li>需要明白servlet的生命周期，也就是service方法，因为是servlet，所以在访问的时候，会经过service方法，而子类中并没有，所以就到父类BaseServlet中找，发现有，然后获取参数即知道了需要调用什么方法，因为方法的编写都在子类中，所以通过反射，获取到子类中对应的方法并运行，其中需要注意的是this这个参数在BaseServlet中的用法。需要理解它。才能理解我们这个程序</li>
+<li>需要明白servlet的生命周期，也就是service方法，因为是servlet，所以在访问的时候，会经过service方法，而子类中并没有，所以就到父类BaseServlet中找，发现有，然后获取参数即知道了需要调用什么方法，因为方法的编写都在子类中，所以通过反射，获取到子类中对应的方法并运行，其中需要注意的是this这个参数在BaseServlet中的用法</li>
 </ol>
   	
 					
