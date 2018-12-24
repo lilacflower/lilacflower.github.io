@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>http://xiyuxy.com/2018/12/24/Java-%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%EF%BC%88IO-NIO%EF%BC%89/</loc>
+    <lastmod>2018-12-24T09:27:21.232Z</lastmod>
+    <data>
+        <display>
+        <title>Java 文件读写（IO/NIO）</title>
+        <pubTime>2018-12-24T07:55:51.000Z</pubTime>
+        
+        <tag>java</tag>
+         
+        <tag>io</tag>
+         
+        <tag>nio</tag>
+         
+         
+           
+             
+              <breadCrumb title="程序设计" url="http://xiyuxy.com/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xiyuxy.com/2018/12/20/JVM%E6%B5%85%E6%9E%90/</loc>
     <lastmod>2018-12-20T03:36:49.406Z</lastmod>
     <data>
@@ -129,9 +153,9 @@
          
         <tag>spring</tag>
          
-        <tag>面向切面</tag>
-         
         <tag>依赖注入</tag>
+         
+        <tag>面向切面</tag>
          
          
            

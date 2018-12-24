@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  
+  
+  <title>  Java 文件读写（IO/NIO） |   Lilac的个人主页 </title>
+
+ 
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+
+
+  <link rel="stylesheet" href="/nayo.min.css"> 
+</head>  
+  <body>   
+    
+      <header class="header">
+	
+  <nav class="header-nav">        
+   
+    <span class="iconfont icon-menu mobile-toggle"></span>   	
+
+    <div class="header-menu">          
+              
+            
+
+              <a class="header-menu-link" id="header-menu-home" href="/">首页</a>     
+
+            
+            
+            
+
+              <a class="header-menu-link" id="header-menu-categories" href="/categories">分类</a>     
+
+            
+            
+            
+
+              <a class="header-menu-link" id="header-menu-archives" href="/archives">归档</a>     
+
+            
+            
+            
+
+              <a class="header-menu-link" id="header-menu-tags" href="/tags">标签</a>     
+
+            
+            
+            
+
+              <a class="header-menu-link" id="header-menu-about" href="/about">关于</a>     
+
+            
+            
+            
+
+              <a class="iconfont icon-menu-search header-menu-link" id="header-menu-search"></a>
+
+            
+                
+    </div>  
+    
+  </nav>
+</header>   
+
+      <div class="container">       
+          
+          
+            <section class="main">  
+          
+
+          <article class="post">
+  
+	<div class="post-header">
+
+	<p class="post-title">	
+		Java 文件读写（IO/NIO）
+	</p>
+			
+
+	<div class="meta-info">	
+	<span>
+		Dec 24, 2018
+	</span>
+
+	
+	
+		<i class="iconfont icon-words"></i>
+		<span>
+			4500
+		</span>
+	
+</div>
+
+</div> 
+	 
+
+	  <div class="post-content slideDownMin">
+
+		
+
+			
+					<p>文件读写通常有以下几种方法：</p>
+<ol>
+<li>文件读写（InputStream/OutputStream）</li>
+<li>字符读取（FileReader/FileWriter）</li>
+<li>行读取（BufferedReader/BufferedWriter）</li>
+</ol>
+<p>代码（txt文件读写为例）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br></pre></td><td class="code"><pre><span class="line">package stream;</span><br><span class="line"></span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.BufferedWriter;</span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.FileReader;</span><br><span class="line">import java.io.FileWriter;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.nio.ByteBuffer;</span><br><span class="line">import java.nio.channels.FileChannel;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @Author: tugang</span><br><span class="line"> * @Description: 字节流、字符流、缓冲流</span><br><span class="line"> * @Date: Created in 2018年12月24日 下午4:03:00</span><br><span class="line"> * @Modified by: </span><br><span class="line"> */</span><br><span class="line">public class FileOperate &#123;</span><br><span class="line"></span><br><span class="line">	private static final String FILE_READ_PATH = &quot;E:/work/readTest.txt&quot;;</span><br><span class="line">	private static final String FILE_WRITE_PATH = &quot;E:/work/writeTest.txt&quot;;</span><br><span class="line">	</span><br><span class="line">	//以字节为单位读写文件内容</span><br><span class="line">	public static void readFileByByte(String filePath) &#123;</span><br><span class="line">		File file = new File(filePath);</span><br><span class="line">		//InputStream: 此抽象类是表示字节输入流的所有类的超类</span><br><span class="line">		InputStream ins = null;</span><br><span class="line">		OutputStream ous = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			//FileInputStream: 从文件系统中的某个文件中获得输入字节</span><br><span class="line">			ins = new FileInputStream(file);</span><br><span class="line">			ous = new FileOutputStream(FILE_WRITE_PATH);</span><br><span class="line">			int temp = 0;</span><br><span class="line">			//read(): 从输入流中读取数据的下一个字节</span><br><span class="line">			while ((temp = ins.read()) != -1) &#123;</span><br><span class="line">				ous.write(temp);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (ins != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					ins.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if (ous != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					ous.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//以字符为单位读写文件内容</span><br><span class="line">	public static void readFileByCharacter(String filePath) &#123;</span><br><span class="line">		File file = new File(filePath);</span><br><span class="line">		//FileReader: 用来读取字符文件的便捷类</span><br><span class="line">		FileReader reader = null;</span><br><span class="line">		FileWriter writer = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			reader = new FileReader(file);</span><br><span class="line">			writer = new FileWriter(FILE_WRITE_PATH);</span><br><span class="line">			int temp = 0;</span><br><span class="line">			while ((temp = reader.read()) != -1) &#123;</span><br><span class="line">				writer.write((char) temp);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (reader != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					reader.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if (writer != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					writer.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//以行为单位读写文件内容</span><br><span class="line">	public static void readFileByLine(String filePath) &#123;</span><br><span class="line">		File file = new File(filePath);</span><br><span class="line">		//BufferedReader: 从字符输入流中读取文本，缓冲各个字符，从而实现字符、数组和行的高效读取</span><br><span class="line">		BufferedReader bufReader = null;</span><br><span class="line">		BufferedWriter bufWriter = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			bufReader = new BufferedReader(new FileReader(file));</span><br><span class="line">			bufWriter = new BufferedWriter(new FileWriter(FILE_WRITE_PATH));</span><br><span class="line">			String temp = null;</span><br><span class="line">			while ((temp = bufReader.readLine()) != null) &#123;</span><br><span class="line">				bufWriter.write(temp + &quot;\n&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (bufReader != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					bufReader.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if (bufWriter != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					bufWriter.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//使用Java.nio ByteBuffer字节将一个文件输出至另一文件</span><br><span class="line">	public static void readFileByByteBuffer(String filePath) &#123;</span><br><span class="line">		FileInputStream ins = null;</span><br><span class="line">		FileOutputStream ous = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			//获取源文件和目标文件的输入输出流</span><br><span class="line">			ins = new FileInputStream(filePath);</span><br><span class="line">			ous = new FileOutputStream(FILE_WRITE_PATH);</span><br><span class="line">			FileChannel fcIns = ins.getChannel();</span><br><span class="line">			FileChannel fcOus = ous.getChannel();</span><br><span class="line">			ByteBuffer buffer = ByteBuffer.allocate(1024);</span><br><span class="line">			int r = 0;</span><br><span class="line">			while (true) &#123;</span><br><span class="line">				//clear方法重设缓冲区，使它可以接受读入的数据</span><br><span class="line">				buffer.clear();</span><br><span class="line">				//从输入通道中将数据读到缓冲区</span><br><span class="line">				r = fcIns.read(buffer);</span><br><span class="line">				if (r == -1) &#123;</span><br><span class="line">					break;</span><br><span class="line">				&#125;</span><br><span class="line">				//flip方法让缓冲区可以将新读入的数据写入另一个通道</span><br><span class="line">				buffer.flip();</span><br><span class="line">				fcOus.write(buffer);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; finally &#123;</span><br><span class="line">			if (ins != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					ins.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if (ous != null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					ous.close();</span><br><span class="line">				&#125; catch (IOException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上就是本文关于Java 文件读写（IO/NIO）三种输入输出流详细代码及总结，希望对大家有所帮助。</p>
+  	
+					
+	  </div>     
+	  
+
+	
+<div class="post-meta">
+      
+        <i class="iconfont icon-category"></i>       
+        <a class="category-link" href="/categories/程序设计/">程序设计</a> 	
+     
+      	
+
+      
+        <i class="iconfont icon-tag"></i>     
+          <a class="tag-link" href="/tags/io/">io</a> <a class="tag-link" href="/tags/java/">java</a> <a class="tag-link" href="/tags/nio/">nio</a>    
+      	
+</div>
+
+
+
+
+
+<div class="post-footer">
+  <div class="pf-left">
+      <img class="pf-avatar" src="/images/header.jpg">
+      <p class="pf-des">Hi,I am Lilac.</p>
+  </div>
+
+  <div class="pf-right">           
+      <div class="pf-links">
+        
+
+
+
+
+<span class="donate-btn">
+	<span class="iconfont icon-donate"></span>
+</span>
+
+
+<div id="donate-box" class="sildeUpMin">
+
+	<span class="donate-cancel iconfont icon-cancel"></span>
+
+	<div class="donate-img-box">
+		<img id="donate-qr-wechat" class="noLazyLoad donate-img" src="/images/donate1.png" alt="No Donate Image!">	
+		<img id="donate-qr-alipay" class="noLazyLoad donate-img" src="/images/donate2.jpg" alt="No Donate Image!">	
+	</div>
+
+	<span class="donate-word">世界很美，美在有你...</span>
+
+	<div class="donate-list">
+		<span class="iconfont icon-donate-wechat"></span>
+		<span class="iconfont icon-donate-alipay"></span>
+	</div>
+
+</div>
+
+ 
+        
+	
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=21d601593a1de"></script>
+	
+	<span class="share-btn">
+	<span class="iconfont icon-share"></span>
+	</span>
+
+
+	<div class="-mob-share sildeUpMin">
+		   			             
+            <a class="iconfont  icon-share-qq -mob-share-qq"></a>		
+     	   			             
+            <a class="iconfont  icon-share-weixin -mob-share-weixin"></a>		
+     	   			             
+            <a class="iconfont  icon-share-weibo -mob-share-weibo"></a>		
+     	   			             
+            <a class="iconfont  icon-share-douban -mob-share-douban"></a>		
+     	   			             
+            <a class="iconfont  icon-share-facebook -mob-share-facebook"></a>		
+     	   			             
+            <a class="iconfont  icon-share-twitter -mob-share-twitter"></a>		
+     	   			             
+            <a class="iconfont  icon-share-google -mob-share-google"></a>		
+     	   
+	</div>	
+
+      </div>  
+    <nav class="pf-paginator">
+           
+        
+      
+        
+        <a href="/2018/12/20/JVM浅析/" data-hover="JVM浅析"> 下一篇</a>
+            
+  </nav>   
+  </div>
+</div> 
+	
+
+
+    <div id="comment">   
+    </div>
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+    <script>
+        new Valine({
+			el: '#comment',
+			notify: false, 
+			verify: false, 
+			app_id: 'KdBEOrmsVTUkBB43Ijx5j25d-gzGzoHsz',
+			app_key: 'jsKmKvo9W9vxprFRyfInIxRt',  
+			path: window.location.pathname, 
+			avatar: 'mm' ,
+			guest_info: ['nick','mail'],
+			placeholder: 'leave your footprints'
+        });
+    </script>
+	
+</article>
+
+          </section> 
+      </div>            
+    
+    <a id="backTop">
+      <span>
+        <i class="iconfont icon-backtotop"></i>
+      </span>
+    </a> 
+
+  
+    
+    <div class="search-container sildeUpMin">
+        <div class="search-header">
+            <input type="text" placeholder="输入你想搜索的" id="search-input" class="search-input">  
+            <span class="search-cancel iconfont icon-cancel"></span>
+        </div>
+        <div id="search-result" class="search-result"></div>
+    </div>
+ 
+     <div class="mobile-menu">      
+
+      
+      <img class="mobile-menu-icon" src="/images/favicon.png">   
+      
+
+         
+            
+
+            <a class="mobile-menu-link" href="/">首页
+            </a>
+            
+         
+            
+
+            <a class="mobile-menu-link" href="/categories">分类
+            </a>
+            
+         
+            
+
+            <a class="mobile-menu-link" href="/archives">归档
+            </a>
+            
+         
+            
+
+            <a class="mobile-menu-link" href="/tags">标签
+            </a>
+            
+         
+            
+
+            <a class="mobile-menu-link" href="/about">关于
+            </a>
+            
+         
+                          
+
+            <a class="mobile-menu-link mobile-menu-search" href="#">搜索 </a>                 
+            
+         
+      
+</div>        
+    
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?12f30a1c133ad3b622556efba282a5e6"; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+     
+    
+
+
+
+
+<footer id="footer">	    
+
+		
+		<div class="footer-copyright">
+		&copy;
+		
+		2018		
+	
+		Lilac
+		<br>
+
+		Theme By
+		<a href="https://github.com/Lemonreds/hexo-theme-Nayo" target="_blank">Nayo</a>	
+		</div>			
+	 
+</footer>   
+
+  
+
+    <script src="/nayo.bundle.js"></script>           
+  </body>        
+</html>
