@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>http://xiyuxy.com/2018/09/28/Kettle%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2019-01-03T13:53:44.079Z</lastmod>
+    <data>
+        <display>
+        <title>Kettle使用介绍</title>
+        <pubTime>2018-09-28T01:47:37.000Z</pubTime>
+        
+        <tag>ETL利器</tag>
+         
+        <tag>水壶</tag>
+         
+        <tag>跨平台</tag>
+         
+        <tag>JAVA编写</tag>
+         
+         
+           
+             
+              <breadCrumb title="kettle" url="http://xiyuxy.com/categories/kettle/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xiyuxy.com/2018/12/24/Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/</loc>
     <lastmod>2018-12-24T12:34:25.146Z</lastmod>
     <data>
@@ -175,9 +201,9 @@
          
         <tag>spring</tag>
          
-        <tag>依赖注入</tag>
-         
         <tag>面向切面</tag>
+         
+        <tag>依赖注入</tag>
          
          
            
