@@ -163,10 +163,10 @@
 <p>把邮件地址换成你自己的邮件地址，然后一路回车，使用默认值即可。</p>
 <p>如果一切顺利的话，可以在用户主目录里找到 .ssh 目录，里面有 id_rsa 和 id_rsa.pub 两个文件，这两个就是SSH Key的秘钥对， id_rsa 是私钥，不能泄露出去， id_rsa.pub 是公钥。</p>
 <p><strong>第二步</strong>：登陆GitHub，打开“Settings”，然后点击“SSH and GPG Keys”，点击“New SSH Key”，填上任意的 Title ，在 Key 文本框里粘贴 id_rsa.pub 的文件内容，最后点击 Add SSH key：</p>
-<p><img src="E:/blog/learning/img/git_1.png" alt="实例1"></p>
+<p><img src="../../public/images/git_1.png" alt="实例1"></p>
 <h4 id="3-1-添加远程库"><a href="#3-1-添加远程库" class="headerlink" title="3.1 添加远程库"></a>3.1 添加远程库</h4><p>本地创建了一个 Git 仓库后，又想在 GitHub 创建一个 Git 仓库，并且让这两个仓库进行远程同步，这样，GitHub上的仓库既可以作为备份，又可以让其他人通过该仓库来协作。</p>
 <p><strong>第一步</strong>：登录 Github ，然后找到“Greate a new repository”，创建一个新的仓库：</p>
-<p><img src="E:/blog/learning/img/git_2.png" alt="实例1"></p>
+<p><img src="../../public/images/git_2.png" alt="实例1"></p>
 <p>Git 仓库生成后，我们根据 Github 的提示，在本地的 learngit 仓库下执行命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin git@github.com:gitname/learngit.git</span><br></pre></td></tr></table></figure>
 <p>把上面的 gitname 替换成你自己的 Github 账户名，添加后，远程库的名字就是 origin ，这是 Git 默认的叫法，也可以改成别的。</p>
